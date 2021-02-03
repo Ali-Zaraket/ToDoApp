@@ -1,0 +1,29 @@
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+}
+
+.color2 {
+  color: #61dafb;
+}
+
+.task-wrapper {
+  border: 2px solid gray;
+  border-radius: 15px;
+  padding: 15px;
+  color: white;
+  font-weight: 300;
+  margin-top: 20px;
+  font-size: 24px;
+}
+
+.flex-wrapper{
+  display: flex;
+}
+
+.task-wrapper:hover {
+  background-color: #39a8c7;
+}
+.list-box{
+  padding-top: 20px;
+}

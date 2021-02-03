@@ -33,18 +33,16 @@ class CreateTaskView(generics.CreateAPIView):
         return Response({'Bad Request': 'Invalid data..'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GetTaskView(APIView):
-    serializer_class = TaskSerializer
+class DeleteTaskView(APIView):
     lookup_url_kwarg = 'pk'
 
-    def get(self, request, format=None):
-        pk = self.request.GET.get(self.lookup_url_kwarg)
+    def post(self, request, format=None):
+        pk = self.request.data.get(self.lookup_url_kwarg)
         if pk:
             task = Task.objects.filter(pk=pk)
             if task.exists():
-                data = self.serializer_class(task).data
-                return Response(data, status=status.HTTP_200_OK)
-
-            return Response({'Task Not found': 'invalid id'}, status=status.HTTP_404_NOT_FOUND)
-        return Response({'Bad request': 'task id not found'}, status=status.HTTP_400_BAD_REQUEST)
-
+                task = task[0]
+                task.delete()
+                return Response({'Deleted': 'Task has been deleted..'}, status=status.HTTP_200_OK)
+            return Response({'Invalid id': 'task with this id not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"Bad request": "NO id argument in the request"}, status=status.HTTP_400_BAD_REQUEST)

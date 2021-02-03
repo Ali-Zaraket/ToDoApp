@@ -4,5 +4,5 @@ from .views import *
 urlpatterns = [
     path('tasks', TaskView.as_view()),
     path('create-task', CreateTaskView.as_view()),
-    path('get-task', GetTaskView.as_view()),
+    path('delete-task', DeleteTaskView.as_view()),
 ]
