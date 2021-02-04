@@ -46,3 +46,22 @@ class DeleteTaskView(APIView):
                 return Response({'Deleted': 'Task has been deleted..'}, status=status.HTTP_200_OK)
             return Response({'Invalid id': 'task with this id not found'}, status=status.HTTP_404_NOT_FOUND)
         return Response({"Bad request": "NO id argument in the request"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DoneTaskView(APIView):
+    def patch(self, request, format=None):
+        pk = self.request.data.get('pk')
+        done = self.request.data.get('done')
+
+        if pk:
+            task = Task.objects.filter(pk=pk)
+            if task.exists():
+                task = task[0]
+                task.done = done
+                task.save()
+
+                data = TaskSerializer(task).data
+
+                return Response(data, status=status.HTTP_200_OK)
+            return Response({'Invalid id': 'task with this id not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"Bad request": "NO id argument in the request"}, status=status.HTTP_400_BAD_REQUEST)

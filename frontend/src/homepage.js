@@ -18,9 +18,21 @@ export default class HomePage extends Component {
         this.renderTask = this.renderTask.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleDeleteButton = this.handleDeleteButton.bind(this);
+        this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
+        this.renderDeleteAll = this.renderDeleteAll.bind(this);
+        this.getCompleted = this.getCompleted.bind(this);
     }
     componentDidMount() {
         this.fetchTasks();
+    }
+    getCompleted(list){
+        var completed = 0;
+        list.map((task) => {
+            if(task.done){
+                completed++;
+            }
+        })
+        return completed;
     }
 
     fetchTasks(){
@@ -60,17 +72,41 @@ export default class HomePage extends Component {
         });
     }
 
-    renderTask(task, index) {
-        return(
-            <div key={index} className="task-wrapper flex-wrapper">
-                <div style={{flex:7}}>
-                    <span>{task.description}</span>
+    handleCheckBoxChange(e, task){
+        var checked = e.target.checked;
+
+        var url = "http://localhost:8000/api/done-task";
+        var requestOptions = {
+            method: 'PATCH',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                pk: task.id,
+                done: checked,
+            })
+        };
+        fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then(() => {
+            this.fetchTasks();
+        });
+    }
+
+    renderTask(task, index, done=null) {
+        if(done) {
+            return(
+                <div key={index} className="task-wrapper flex-wrapper" id="slide">
+                    <div className="checkbox">
+                        <input className="form-check-input" value="" checked={task.done} onChange={(e) => this.handleCheckBoxChange(e, task)} type="checkbox" id="checkboxNoLabel" value="" aria-label="..." />
+                    </div>
+                    <div style={{flex:7}}>
+                        <span>{task.description}</span>
+                    </div>
+                    <div style={{flex:1}}>
+                        <button className="btn btn-danger" onClick={() => this.handleDeleteButton(task)}>delete</button>
+                    </div>
                 </div>
-                <div style={{flex:1}}>
-                    <button className="btn btn-danger" onClick={() => this.handleDeleteButton(task)}>delete</button>
-                </div>
-            </div>
-        );
+            );
+        }
     }
 
     handleInputChange(e){
@@ -84,7 +120,7 @@ export default class HomePage extends Component {
     }
 
     handleDeleteButton(task){
-        var url = "http://localhost:8000/api/delete-task" + "?pk=" + task.id;
+        var url = "http://localhost:8000/api/delete-task?pk=" + task.id;
         var requestOptions = {
             method: "POST",
             headers: {
@@ -99,26 +135,47 @@ export default class HomePage extends Component {
         .then(() => this.fetchTasks());
     }
 
+    renderDeleteAll(){
+        return(
+            <div className="pt-5 pb-4 row" id="slide">
+                <button type="submit" className="btn btn-outline-danger" onClick={() => {
+                    this.state.list.map((task) => this.handleDeleteButton(task))
+                }}>
+                    Delete All List
+                </button>
+            </div>
+        );
+    }
+
     render() {
         return (
             <div className="container">
                 <div className="pt-5">
-                    <legend className="display-1 text-info" align="center">To Do APP</legend>
+                    <legend className="display-1 text-info" align="center">TO DO</legend>
                 </div>
                 <div className="row pt-4">
                     <div className="col-9">
-                        <input type="text" onChange={this.handleInputChange} value={this.state.task.description} required className="form-control" placeholder="Add a task.." />
+                        <input type="text" onChange={this.handleInputChange} value={this.state.task.description} className="form-control" placeholder="Add a task.." required/>
                     </div>
                     <div className="col-1">
-                        <button type="submit" className="btn btn-outline-info" onClick={this.handleAddButtonClick}>
+                        <button type="submit" className="btn btn-info" onClick={this.handleAddButtonClick}>
                             Add
                         </button>
                     </div>
                 </div>
                 
-                <div className="list-box">
-                    {this.state.list.map((task, index) => this.renderTask(task, index))}
+                <div className="list-box border-bottom border-secondary border-2 pb-5">
+                    {this.state.list.map((task, index, done) => this.renderTask(task, index, done=!task.done))}
                 </div>
+                {this.state.list.length > 0 ?
+                    <legend className="text-secondary display-6" align="center">DONE ({this.getCompleted(this.state.list)})</legend>
+                    : null
+                }
+                <div className="list-box">
+                    {this.state.list.map((task, index, done) => this.renderTask(task, index, done=task.done))}
+                </div>
+                {this.state.list.length > 1 ? this.renderDeleteAll() : null}
+                
             </div>
         );
     }
