@@ -78,7 +78,7 @@ export default class HomePage extends Component {
         var url = "http://localhost:8000/api/done-task";
         var requestOptions = {
             method: 'PATCH',
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json"},
             body: JSON.stringify({
                 pk: task.id,
                 done: checked,

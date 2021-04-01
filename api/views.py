@@ -5,6 +5,8 @@ from .models import Task
 from .serializers import TaskSerializer, CreateTaskSerializers
 from rest_framework.response import Response
 
+from django.contrib.auth import login, models
+
 
 class TaskView(generics.ListAPIView):
     queryset = Task.objects.all()
@@ -50,6 +52,7 @@ class DeleteTaskView(APIView):
 
 class DoneTaskView(APIView):
     def patch(self, request, format=None):
+        
         pk = self.request.data.get('pk')
         done = self.request.data.get('done')
 
