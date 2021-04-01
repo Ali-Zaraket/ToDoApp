@@ -33,6 +33,7 @@ export default class HomePage extends Component {
             if(task.done){
                 completed++;
             }
+            return task;
         })
         return completed;
     }

@@ -128,5 +128,5 @@ SITE_ID = 1
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, 'frontend/build/static')]
 
 CORS_ALLOWED_ORIGINS = [
-    "*"
+    "https://day-list.herokuapp.com/"
 ]
