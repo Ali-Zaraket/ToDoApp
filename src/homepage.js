@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+const ENDPOINT = "https://day-list.herokuapp.com/api/";
+
 
 export default class HomePage extends Component {
     constructor(props) {
@@ -36,7 +38,7 @@ export default class HomePage extends Component {
     }
 
     fetchTasks(){
-        var url = "http://localhost:8000/api/tasks";
+        var url = ENDPOINT + "tasks";
 
         fetch(url).then(response => response.json())
         .then((data) => {
@@ -47,7 +49,7 @@ export default class HomePage extends Component {
     }
 
     handleAddButtonClick() {
-        var url = "http://localhost:8000/api/create-task";
+        var url = ENDPOINT + "create-task";
         var requestOptions = {
             method: "POST",
             headers: {
@@ -75,7 +77,7 @@ export default class HomePage extends Component {
     handleCheckBoxChange(e, task){
         var checked = e.target.checked;
 
-        var url = "http://localhost:8000/api/done-task";
+        var url = ENDPOINT + "done-task";
         var requestOptions = {
             method: 'PATCH',
             headers: { "Content-Type": "application/json"},
@@ -120,7 +122,7 @@ export default class HomePage extends Component {
     }
 
     handleDeleteButton(task){
-        var url = "http://localhost:8000/api/delete-task?pk=" + task.id;
+        var url = ENDPOINT + "delete-task?pk=" + task.id;
         var requestOptions = {
             method: "POST",
             headers: {
