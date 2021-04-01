@@ -128,6 +128,5 @@ SITE_ID = 1
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, 'frontend/build/static')]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",
-    "http://localhost:3000",
+    "*"
 ]
